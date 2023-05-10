@@ -36,7 +36,8 @@ def validate_format(filename, valid_formats):
 
 def check_file_exists(filename):
     if not path.exists(filename):
-        raise AssertionError(f"The input file doesn't exist: {filename}")
+        # FIXME Should be an assertion error but fails on relative and full paths
+        logger.error(f"The input file doesn't exist: {filename}")
 
 
 class InputParser:
