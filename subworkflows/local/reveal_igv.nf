@@ -1,5 +1,5 @@
-include { GENERATE_IGV_FILES } from '../../modules/nf-core/modules/igv/reveal/main'
-include { IGV_SNAPSHOTS } from '../../modules/nf-core/modules/igv/reveal/main'
+include { GENERATE_IGV_FILES } from '../../modules/local/igv/reveal/main'
+include { IGV_SNAPSHOTS } from '../../modules/local/igv/reveal/main'
 
 workflow PREPARE_IGV_FILES {
 
