@@ -20,8 +20,9 @@ def validate_schema(json_input, json_schema):
         validate(instance=json_input, schema=json_schema)
         return True, ""
     except Exception as error:
-        message = error.schema['errorMessage'] if 'errorMessage' in error.schema else str(
-            error.path) + " " + error.message
+        message = (
+            error.schema["errorMessage"] if "errorMessage" in error.schema else str(error.path) + " " + error.message
+        )
         return False, message
 
 
@@ -49,9 +50,9 @@ class InputParser:
     INPUT_SCHEMA = "../assets/schema_input.json"
     IGENOMES_CONFIG = "../conf/igenomes.config"
 
-    VALID_TRACKS = (".bed", ".vcf", ".bam")
+    VALID_TRACKS = (".bed", ".vcf", ".bam", ".bed.gz", ".vcf.gz")
     VALID_REGIONS = ".bed"
-    VALID_REFERENCE = (".fq.gz", ".fastq.gz", ".fa", ".fa.gz")
+    VALID_REFERENCE = (".fq.gz", ".fastq.gz", ".fa", ".fa.gz", ".fasta")
 
     def __init__(self, params_file, reference):
         self.params_file = params_file
@@ -64,23 +65,23 @@ class InputParser:
     def _load_data(self):
         validated_json = self._check_schema()
 
-        for tracks_entry in validated_json['reveal']['tracks']:
-            self.tracks.append({"name": tracks_entry.get('name'), "path": tracks_entry['path']})
+        for tracks_entry in validated_json["reveal"]["tracks"]:
+            self.tracks.append({"name": tracks_entry.get("name"), "path": tracks_entry["path"]})
 
-        for region_entry in validated_json['reveal']['capture']['regions']:
-            self.capture_regions.append({"prefix": region_entry.get('prefix', ''), "path": region_entry['path']})
+        for region_entry in validated_json["reveal"]["capture"]["regions"]:
+            self.capture_regions.append({"prefix": region_entry.get("prefix", ""), "path": region_entry["path"]})
 
-        for option_slop in validated_json['reveal']['capture']['slops']:
+        for option_slop in validated_json["reveal"]["capture"]["slops"]:
             self.slops.append(option_slop)
 
-        for option_entry in validated_json['reveal']['capture']['igvOptions']:
-            self.igv_options.append({option_entry['option']: option_entry['value']})
+        for option_entry in validated_json["reveal"]["capture"]["igvOptions"]:
+            self.igv_options.append({option_entry["option"]: option_entry["value"]})
 
     def _check_schema(self):
         base_path = Path(__file__).parent
         schema_path = (base_path / self.INPUT_SCHEMA).resolve()
 
-        with open(self.params_file, 'r') as params_file, open(schema_path, 'r') as schema_file:
+        with open(self.params_file, "r") as params_file, open(schema_path, "r") as schema_file:
             json_input = yaml.safe_load(params_file)
             json_schema = json.load(schema_file)
             validation, message = validate_schema(json_input, json_schema)
@@ -96,13 +97,13 @@ class InputParser:
 
     def _check_regions(self):
         for region in self.capture_regions:
-            validate_format(region['path'], self.VALID_REGIONS)
-            check_file_exists(region['path'])
+            validate_format(region["path"], self.VALID_REGIONS)
+            check_file_exists(region["path"])
 
     def _check_tracks(self):
         for track in self.tracks:
-            validate_format(track['path'], self.VALID_TRACKS)
-            check_file_exists(track['path'])
+            validate_format(track["path"], self.VALID_TRACKS)
+            check_file_exists(track["path"])
 
     def _generate_file_pointers(self, preferences_path, slops_path):
         with open("reveal_params.csv", "w") as pointer:
@@ -137,6 +138,7 @@ class InputParser:
         preferences_path = self._generate_igv_preferences_file()
         slops_path = self._generate_slops_file()
         self._generate_file_pointers(preferences_path, slops_path)
+
 
 def parse_args(argv=None):
     """Define and immediately parse command line arguments."""
@@ -175,4 +177,3 @@ def main(argv=None):
 
 if __name__ == "__main__":
     sys.exit(main())
-

@@ -18,8 +18,8 @@
                             },
                             "path": {
                                 "type": "string",
-                                "pattern": "^\\S+\\.(bed|vcf|bam)$",
-                                "errorMessage": "At least one track file to be included in the captures should be provided, cannot contain spaces and must have extension '.bed', '.bam' or '.vcf'"
+                                "pattern": "^\\S+\\.(bed|vcf|bam)(\\.gz)?$",
+                                "errorMessage": "At least one track file to be included in the tracks should be provided, cannot contain spaces and must have extension '.bed', '.bam' or '.vcf'"
                             }
                         },
                         "required": [
